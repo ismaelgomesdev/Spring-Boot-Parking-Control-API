@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,7 +15,5 @@ public interface ParkingSpotRepository extends JpaRepository <ParkingSpotModel, 
     boolean existsByLicensePlateCar(String licensePlateCar);
     boolean existsByParkingSpotNumber(String parkingSpotNumber);
     boolean existsByApartmentAndBlock(String apartment, String block);
-    Page<ParkingSpotModel> findAll(Pageable pageable);
-    Optional<ParkingSpotModel> findById(UUID id);
-    void delete(ParkingSpotModel parkingSpotModel);
+
 }
