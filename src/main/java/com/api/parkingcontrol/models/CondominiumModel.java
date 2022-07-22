@@ -23,7 +23,7 @@ public class CondominiumModel {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
-    @OneToMany(mappedBy = "ApartmentModel")
+    @OneToMany(mappedBy = "condominium")
     private Collection<ApartmentModel> apartments;
 
     public UUID getId() {

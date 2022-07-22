@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
+@Entity
+@Table(name = "TB_CONDOMINIUM_RESIDENT")
 public class CondominiumResidentModel {
     private static final long serialVersionUID = 1L;
 
@@ -21,10 +23,10 @@ public class CondominiumResidentModel {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
-    @OneToMany(mappedBy = "VehicleModel")
+    @OneToMany(mappedBy = "condominiumResident")
     private Collection<VehicleModel> vehicles;
 
-    @OneToMany(mappedBy = "ApartmentModel")
+    @OneToMany(mappedBy = "condominiumResident")
     private Collection<ApartmentModel> apartments;
 
     public UUID getId() {
