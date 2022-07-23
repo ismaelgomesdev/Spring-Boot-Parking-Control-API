@@ -72,4 +72,20 @@ public class ApartmentModel {
     public void setRegistrationDate(LocalDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
+
+    public CondominiumResidentModel getCondominiumResident() {
+        return condominiumResident;
+    }
+
+    public void setCondominiumResident(CondominiumResidentModel condominiumResident) {
+        this.condominiumResident = condominiumResident;
+    }
+
+    public CondominiumModel getCondominium() {
+        return condominium;
+    }
+
+    public void setCondominium(CondominiumModel condominium) {
+        this.condominium = condominium;
+    }
 }

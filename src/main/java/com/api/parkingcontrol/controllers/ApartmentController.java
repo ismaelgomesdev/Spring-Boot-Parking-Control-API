@@ -5,6 +5,7 @@ import com.api.parkingcontrol.dtos.CondominiumDto;
 import com.api.parkingcontrol.models.ApartmentModel;
 import com.api.parkingcontrol.models.CondominiumModel;
 import com.api.parkingcontrol.services.ApartmentService;
+import com.api.parkingcontrol.services.CondominiumService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +27,11 @@ import java.util.UUID;
 public class ApartmentController {
 
     final ApartmentService apartmentService;
+    final CondominiumService condominiumService;
 
-    public ApartmentController(ApartmentService apartmentService) {
+    public ApartmentController(ApartmentService apartmentService, CondominiumService condominiumService) {
         this.apartmentService = apartmentService;
+        this.condominiumService = condominiumService;
     }
 
     @PostMapping
@@ -36,6 +39,12 @@ public class ApartmentController {
         var apartmentModel = new ApartmentModel();
         BeanUtils.copyProperties(apartmentDto, apartmentModel);
         apartmentModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumId());
+        if (!condominiumModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
+        }
+        apartmentModel.setCondominium(condominiumModelOptional.get());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.save(apartmentModel));
     }
 
@@ -75,6 +84,12 @@ public class ApartmentController {
         apartmentModel.setId(apartmentModelOptional.get().getId());
         apartmentModel.setRegistrationDate(apartmentModelOptional.get().getRegistrationDate());
         return ResponseEntity.status(HttpStatus.OK).body(apartmentService.save(apartmentModel));
+    }
+
+    private boolean apartmentExists(ApartmentDto apartmentDto) {
+        Optional<ApartmentModel> apartmentModelOptional = apartmentService.fin
+
+
     }
 
 }

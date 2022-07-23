@@ -2,6 +2,8 @@ package com.api.parkingcontrol.dtos;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 public class ApartmentDto {
     @NotBlank
@@ -10,8 +12,11 @@ public class ApartmentDto {
     @NotBlank
     private String apartmentNumber;
 
-    @NotBlank
+    @NotNull
     private int parkingSpotQuantity;
+
+    @NotNull
+    private UUID condominiumId;
 
     public String getBlock() {
         return block;
@@ -35,5 +40,13 @@ public class ApartmentDto {
 
     public void setParkingSpotQuantity(int parkingSpotQuantity) {
         this.parkingSpotQuantity = parkingSpotQuantity;
+    }
+
+    public UUID getCondominiumId() {
+        return condominiumId;
+    }
+
+    public void setCondominiumId(UUID condominiumId) {
+        this.condominiumId = condominiumId;
     }
 }
