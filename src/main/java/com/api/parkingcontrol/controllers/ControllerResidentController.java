@@ -49,7 +49,7 @@ public class ControllerResidentController {
     public ResponseEntity<Object> getOneCondominiumResident(@PathVariable(value = "id") UUID id){
         Optional<CondominiumResidentModel> condominiumModelOptional = condominiumResidentService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(condominiumModelOptional.get());
     }
@@ -58,10 +58,10 @@ public class ControllerResidentController {
     public ResponseEntity<Object> deleteCondominiumResident(@PathVariable(value = "id") UUID id){
         Optional<CondominiumResidentModel> condominiumModelOptional = condominiumResidentService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
         }
         condominiumResidentService.delete(condominiumModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Parking Spot deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Condominium Resident deleted successfully.");
     }
 
     @PutMapping("/{id}")
@@ -69,7 +69,7 @@ public class ControllerResidentController {
                                                     @RequestBody @Valid CondominiumDto condominiumDto){
         Optional<CondominiumResidentModel> condominiumModelOptional = condominiumResidentService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
         }
         var condominiumResidentModel = new CondominiumResidentModel();
         BeanUtils.copyProperties(condominiumDto, condominiumResidentModel);

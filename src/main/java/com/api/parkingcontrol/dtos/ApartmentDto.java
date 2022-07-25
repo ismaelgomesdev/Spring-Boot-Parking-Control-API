@@ -18,6 +18,9 @@ public class ApartmentDto {
     @NotNull
     private UUID condominiumId;
 
+    @NotNull
+    private UUID condominiumResidentId;
+
     public String getBlock() {
         return block;
     }
@@ -48,5 +51,13 @@ public class ApartmentDto {
 
     public void setCondominiumId(UUID condominiumId) {
         this.condominiumId = condominiumId;
+    }
+
+    public UUID getCondominiumResidentId() {
+        return condominiumResidentId;
+    }
+
+    public void setCondominiumResidentId(UUID condominiumResidentId) {
+        this.condominiumResidentId = condominiumResidentId;
     }
 }

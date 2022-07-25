@@ -48,7 +48,7 @@ public class VehicleController {
     public ResponseEntity<Object> getOneVehicle(@PathVariable(value = "id") UUID id){
         Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
         if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(vehicleModelOptional.get());
     }
@@ -57,10 +57,10 @@ public class VehicleController {
     public ResponseEntity<Object> deleteVehicle(@PathVariable(value = "id") UUID id){
         Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
         if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
         vehicleService.delete(vehicleModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Parking Spot deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Vehicle deleted successfully.");
     }
 
     @PutMapping("/{id}")
@@ -68,7 +68,7 @@ public class VehicleController {
                                                   @RequestBody @Valid VehicleDto vehicleDto){
         Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
         if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
         var vehicleModel = new VehicleModel();
         BeanUtils.copyProperties(vehicleDto, vehicleModel);

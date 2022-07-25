@@ -46,7 +46,7 @@ public class CondominiumController {
     public ResponseEntity<Object> getOneCondominium(@PathVariable(value = "id") UUID id){
         Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(condominiumModelOptional.get());
     }
@@ -55,10 +55,10 @@ public class CondominiumController {
     public ResponseEntity<Object> deleteCondominium(@PathVariable(value = "id") UUID id){
         Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
         }
         condominiumService.delete(condominiumModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Parking Spot deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Condominium deleted successfully.");
     }
 
     @PutMapping("/{id}")
@@ -66,7 +66,7 @@ public class CondominiumController {
                                                     @RequestBody @Valid CondominiumDto condominiumDto){
         Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(id);
         if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
         }
         var condominiumModel = new CondominiumModel();
         BeanUtils.copyProperties(condominiumDto, condominiumModel);

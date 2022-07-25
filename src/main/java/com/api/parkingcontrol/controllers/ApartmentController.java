@@ -4,7 +4,9 @@ import com.api.parkingcontrol.dtos.ApartmentDto;
 import com.api.parkingcontrol.dtos.CondominiumDto;
 import com.api.parkingcontrol.models.ApartmentModel;
 import com.api.parkingcontrol.models.CondominiumModel;
+import com.api.parkingcontrol.models.CondominiumResidentModel;
 import com.api.parkingcontrol.services.ApartmentService;
+import com.api.parkingcontrol.services.CondominiumResidentService;
 import com.api.parkingcontrol.services.CondominiumService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -28,10 +30,12 @@ public class ApartmentController {
 
     final ApartmentService apartmentService;
     final CondominiumService condominiumService;
+    final CondominiumResidentService condominiumResidentService;
 
-    public ApartmentController(ApartmentService apartmentService, CondominiumService condominiumService) {
+    public ApartmentController(ApartmentService apartmentService, CondominiumService condominiumService, CondominiumResidentService condominiumResidentService) {
         this.apartmentService = apartmentService;
         this.condominiumService = condominiumService;
+        this.condominiumResidentService = condominiumResidentService;
     }
 
     @PostMapping
@@ -40,9 +44,13 @@ public class ApartmentController {
         BeanUtils.copyProperties(apartmentDto, apartmentModel);
         apartmentModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
         Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumId());
+        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(apartmentDto.getCondominiumResidentId());
         if (!condominiumModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
         }
+        if(!condominiumResidentModelOptional.isPresent())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+
         apartmentModel.setCondominium(condominiumModelOptional.get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.save(apartmentModel));
@@ -57,7 +65,7 @@ public class ApartmentController {
     public ResponseEntity<Object> getOneApartment(@PathVariable(value = "id") UUID id){
         Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(id);
         if (!apartmentModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(apartmentModelOptional.get());
     }
@@ -66,10 +74,10 @@ public class ApartmentController {
     public ResponseEntity<Object> deleteApartment(@PathVariable(value = "id") UUID id){
         Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(id);
         if (!apartmentModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
         }
         apartmentService.delete(apartmentModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Parking Spot deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Apartment deleted successfully.");
     }
 
     @PutMapping("/{id}")
@@ -77,7 +85,7 @@ public class ApartmentController {
                                                     @RequestBody @Valid ApartmentDto apartmentDto){
         Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(id);
         if (!apartmentModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
         }
         var apartmentModel = new ApartmentModel();
         BeanUtils.copyProperties(apartmentDto, apartmentModel);
@@ -87,9 +95,9 @@ public class ApartmentController {
     }
 
     private boolean apartmentExists(ApartmentDto apartmentDto) {
-        Optional<ApartmentModel> apartmentModelOptional = apartmentService.fin
+        //Optional<ApartmentModel> apartmentModelOptional = apartmentService.fin
 
-
+        return false;
     }
 
 }
