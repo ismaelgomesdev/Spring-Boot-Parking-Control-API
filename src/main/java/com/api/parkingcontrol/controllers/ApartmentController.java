@@ -107,7 +107,7 @@ public class ApartmentController {
     }
 
     private boolean condominiumExists(ApartmentDto apartmentDto) {
-        Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumResidentId());
+        Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumId());
         return condominiumModelOptional.isPresent();
     }
 
