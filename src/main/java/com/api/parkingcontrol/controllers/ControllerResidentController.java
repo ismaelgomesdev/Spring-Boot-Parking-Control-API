@@ -66,15 +66,15 @@ public class ControllerResidentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateCondominiumResident(@PathVariable(value = "id") UUID id,
-                                                    @RequestBody @Valid CondominiumDto condominiumDto){
-        Optional<CondominiumResidentModel> condominiumModelOptional = condominiumResidentService.findById(id);
-        if (!condominiumModelOptional.isPresent()) {
+                                                    @RequestBody @Valid CondominiumResidentDto condominiumResidentDto){
+        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(id);
+        if (!condominiumResidentModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
         }
         var condominiumResidentModel = new CondominiumResidentModel();
-        BeanUtils.copyProperties(condominiumDto, condominiumResidentModel);
-        condominiumResidentModel.setId(condominiumModelOptional.get().getId());
-        condominiumResidentModel.setRegistrationDate(condominiumModelOptional.get().getRegistrationDate());
+        BeanUtils.copyProperties(condominiumResidentDto, condominiumResidentModel);
+        condominiumResidentModel.setId(condominiumResidentModelOptional.get().getId());
+        condominiumResidentModel.setRegistrationDate(condominiumResidentModelOptional.get().getRegistrationDate());
         return ResponseEntity.status(HttpStatus.OK).body(condominiumResidentService.save(condominiumResidentModel));
     }
 

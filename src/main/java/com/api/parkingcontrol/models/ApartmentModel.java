@@ -26,11 +26,11 @@ public class ApartmentModel {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "fk_id_condominium_resident")
     private CondominiumResidentModel condominiumResident;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "fk_id_condominium")
     private CondominiumModel condominium;
 
