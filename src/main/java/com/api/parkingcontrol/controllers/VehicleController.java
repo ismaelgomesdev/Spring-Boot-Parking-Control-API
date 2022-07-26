@@ -3,8 +3,11 @@ package com.api.parkingcontrol.controllers;
 import com.api.parkingcontrol.dtos.ApartmentDto;
 import com.api.parkingcontrol.dtos.VehicleDto;
 import com.api.parkingcontrol.models.ApartmentModel;
+import com.api.parkingcontrol.models.CondominiumModel;
+import com.api.parkingcontrol.models.CondominiumResidentModel;
 import com.api.parkingcontrol.models.VehicleModel;
 import com.api.parkingcontrol.services.ApartmentService;
+import com.api.parkingcontrol.services.CondominiumResidentService;
 import com.api.parkingcontrol.services.VehicleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -27,15 +30,25 @@ import java.util.UUID;
 public class VehicleController {
     final VehicleService vehicleService;
 
-    public VehicleController(VehicleService vehicleService) {
+    final CondominiumResidentService condominiumResidentService;
+
+    public VehicleController(VehicleService vehicleService, CondominiumResidentService condominiumResidentService) {
         this.vehicleService = vehicleService;
+        this.condominiumResidentService = condominiumResidentService;
     }
 
     @PostMapping
     public ResponseEntity<Object> saveVehicle(@RequestBody @Valid VehicleDto vehicleDto){
+
+        if(!this.condominiumResidentExists(vehicleDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+
         var vehicleModel = new VehicleModel();
         BeanUtils.copyProperties(vehicleDto, vehicleModel);
         vehicleModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+        vehicleModel.setCondominiumResident(condominiumResidentService.findById(vehicleDto.getCondominiumResidentId()).get());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(vehicleService.save(vehicleModel));
     }
 
@@ -70,10 +83,21 @@ public class VehicleController {
         if (!vehicleModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
+
+        if(!this.condominiumResidentExists(vehicleDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+
         var vehicleModel = new VehicleModel();
+
         BeanUtils.copyProperties(vehicleDto, vehicleModel);
         vehicleModel.setId(vehicleModelOptional.get().getId());
         vehicleModel.setRegistrationDate(vehicleModelOptional.get().getRegistrationDate());
+        vehicleModel.setCondominiumResident(condominiumResidentService.findById(vehicleDto.getCondominiumResidentId()).get());
         return ResponseEntity.status(HttpStatus.OK).body(vehicleService.save(vehicleModel));
+    }
+
+    private boolean condominiumResidentExists(VehicleDto vehicleDto) {
+        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(vehicleDto.getCondominiumResidentId());
+        return condominiumResidentModelOptional.isPresent();
     }
 }

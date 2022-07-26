@@ -2,6 +2,7 @@ package com.api.parkingcontrol.controllers;
 
 import com.api.parkingcontrol.dtos.ApartmentDto;
 import com.api.parkingcontrol.dtos.CondominiumDto;
+import com.api.parkingcontrol.dtos.VehicleDto;
 import com.api.parkingcontrol.models.ApartmentModel;
 import com.api.parkingcontrol.models.CondominiumModel;
 import com.api.parkingcontrol.models.CondominiumResidentModel;
@@ -40,18 +41,19 @@ public class ApartmentController {
 
     @PostMapping
     public ResponseEntity<Object> saveApartment(@RequestBody @Valid ApartmentDto apartmentDto){
+
+        if (!condominiumExists(apartmentDto)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
+        }
+        if(!condominiumResidentExists(apartmentDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+
         var apartmentModel = new ApartmentModel();
         BeanUtils.copyProperties(apartmentDto, apartmentModel);
         apartmentModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumId());
-        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(apartmentDto.getCondominiumResidentId());
-        if (!condominiumModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
-        }
-        if(!condominiumResidentModelOptional.isPresent())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
 
-        apartmentModel.setCondominium(condominiumModelOptional.get());
+        apartmentModel.setCondominium(condominiumService.findById(apartmentDto.getCondominiumId()).get());
+        apartmentModel.setCondominiumResident(condominiumResidentService.findById(apartmentDto.getCondominiumResidentId()).get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.save(apartmentModel));
     }
@@ -87,11 +89,31 @@ public class ApartmentController {
         if (!apartmentModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
         }
+
+        if (!condominiumExists(apartmentDto)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
+        }
+        if(!condominiumResidentExists(apartmentDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+
         var apartmentModel = new ApartmentModel();
         BeanUtils.copyProperties(apartmentDto, apartmentModel);
         apartmentModel.setId(apartmentModelOptional.get().getId());
         apartmentModel.setRegistrationDate(apartmentModelOptional.get().getRegistrationDate());
+        apartmentModel.setCondominium(condominiumService.findById(apartmentDto.getCondominiumId()).get());
+        apartmentModel.setCondominiumResident(condominiumResidentService.findById(apartmentDto.getCondominiumResidentId()).get());
+
         return ResponseEntity.status(HttpStatus.OK).body(apartmentService.save(apartmentModel));
+    }
+
+    private boolean condominiumExists(ApartmentDto apartmentDto) {
+        Optional<CondominiumModel> condominiumModelOptional = condominiumService.findById(apartmentDto.getCondominiumResidentId());
+        return condominiumModelOptional.isPresent();
+    }
+
+    private boolean condominiumResidentExists(ApartmentDto apartmentDto) {
+        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(apartmentDto.getCondominiumResidentId());
+        return condominiumResidentModelOptional.isPresent();
     }
 
     private boolean apartmentExists(ApartmentDto apartmentDto) {

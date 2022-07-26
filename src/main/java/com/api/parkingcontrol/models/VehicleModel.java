@@ -101,4 +101,12 @@ public class VehicleModel {
     public void setRegistrationDate(LocalDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
+
+    public CondominiumResidentModel getCondominiumResident() {
+        return condominiumResident;
+    }
+
+    public void setCondominiumResident(CondominiumResidentModel condominiumResident) {
+        this.condominiumResident = condominiumResident;
+    }
 }

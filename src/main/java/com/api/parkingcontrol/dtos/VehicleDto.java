@@ -2,7 +2,9 @@ package com.api.parkingcontrol.dtos;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 public class VehicleDto {
     @NotBlank
@@ -23,6 +25,9 @@ public class VehicleDto {
 
     @NotBlank
     private String spotAdress;
+
+    @NotNull
+    private UUID condominiumResidentId;
 
     public String getLicensePlate() {
         return licensePlate;
@@ -70,5 +75,13 @@ public class VehicleDto {
 
     public void setSpotAdress(String spotAdress) {
         this.spotAdress = spotAdress;
+    }
+
+    public UUID getCondominiumResidentId() {
+        return condominiumResidentId;
+    }
+
+    public void setCondominiumResidentId(UUID condominiumResidentId) {
+        this.condominiumResidentId = condominiumResidentId;
     }
 }
