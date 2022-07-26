@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface CondominiumResidentRepository  extends JpaRepository<CondominiumResidentModel, UUID> {
+    boolean existsByCpf(String cpf);
 }

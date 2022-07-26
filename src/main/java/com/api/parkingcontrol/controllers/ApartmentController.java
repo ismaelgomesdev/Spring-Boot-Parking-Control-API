@@ -41,6 +41,9 @@ public class ApartmentController {
 
     @PostMapping
     public ResponseEntity<Object> saveApartment(@RequestBody @Valid ApartmentDto apartmentDto){
+        if(apartmentExists(apartmentDto)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Apartment already exists!");
+        }
 
         if (!condominiumExists(apartmentDto)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium not found.");
@@ -84,8 +87,9 @@ public class ApartmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateApartment(@PathVariable(value = "id") UUID id,
-                                                    @RequestBody @Valid ApartmentDto apartmentDto){
+                                                  @RequestBody @Valid ApartmentDto apartmentDto){
         Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(id);
+
         if (!apartmentModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
         }
@@ -117,9 +121,7 @@ public class ApartmentController {
     }
 
     private boolean apartmentExists(ApartmentDto apartmentDto) {
-        //Optional<ApartmentModel> apartmentModelOptional = apartmentService.fin
-
-        return false;
+        return apartmentService.existsByApartmentAndBlock(apartmentDto.getApartmentNumber(), apartmentDto.getBlock());
     }
 
 }

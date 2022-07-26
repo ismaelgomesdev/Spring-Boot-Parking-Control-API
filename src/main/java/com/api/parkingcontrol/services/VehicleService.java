@@ -21,6 +21,10 @@ public class VehicleService {
         this.vehicleRepository = vehicleRepository;
     }
 
+    public boolean existsByLicensePlate(String licensePlate) {
+        return vehicleRepository.existsByLicensePlate(licensePlate);
+    }
+
     @Transactional
     public VehicleModel save(VehicleModel vehicleModel) {
         return vehicleRepository.save(vehicleModel);

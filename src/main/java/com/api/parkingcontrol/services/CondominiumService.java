@@ -19,6 +19,10 @@ public class CondominiumService {
         this.condominiumRepository = condominiumRepository;
     }
 
+    public boolean existsByCnpj(String cnpj) {
+        return condominiumRepository.existsByCnpj(cnpj);
+    }
+
     @Transactional
     public CondominiumModel save(CondominiumModel condominiumModel) {
         return condominiumRepository.save(condominiumModel);

@@ -39,6 +39,9 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<Object> saveVehicle(@RequestBody @Valid VehicleDto vehicleDto){
+        if(vehicleExists(vehicleDto)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Vehicle already exists!");
+        }
 
         if(!this.condominiumResidentExists(vehicleDto))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
@@ -80,6 +83,8 @@ public class VehicleController {
     public ResponseEntity<Object> updateVehicle(@PathVariable(value = "id") UUID id,
                                                   @RequestBody @Valid VehicleDto vehicleDto){
         Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
+
+
         if (!vehicleModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
@@ -99,5 +104,9 @@ public class VehicleController {
     private boolean condominiumResidentExists(VehicleDto vehicleDto) {
         Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(vehicleDto.getCondominiumResidentId());
         return condominiumResidentModelOptional.isPresent();
+    }
+
+    private boolean vehicleExists(VehicleDto vehicleDto) {
+        return vehicleService.existsByLicensePlate(vehicleDto.getLicensePlate());
     }
 }

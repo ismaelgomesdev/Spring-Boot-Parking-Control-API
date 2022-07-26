@@ -20,6 +20,10 @@ public class CondominiumResidentService {
         this.condominiumResidentRepository = condominiumResidentRepository;
     }
 
+    public boolean existsByCpf(String cpf) {
+        return condominiumResidentRepository.existsByCpf(cpf);
+    }
+
     @Transactional
     public CondominiumResidentModel save(CondominiumResidentModel condominiumResidentModel) {
         return condominiumResidentRepository.save(condominiumResidentModel);

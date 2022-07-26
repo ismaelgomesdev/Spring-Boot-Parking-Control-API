@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface CondominiumRepository extends JpaRepository<CondominiumModel, UUID> {
+    boolean existsByCnpj(String cnpj);
 }

@@ -33,6 +33,10 @@ public class ApartmentService {
         return apartmentRepository.findById(id);
     }
 
+    public boolean existsByApartmentAndBlock(String apartmentNumber, String block) {
+        return apartmentRepository.existsByApartmentNumberAndBlock(apartmentNumber, block);
+    }
+
     @Transactional
     public void delete(ApartmentModel apartmentModel) {
         apartmentRepository.delete(apartmentModel);

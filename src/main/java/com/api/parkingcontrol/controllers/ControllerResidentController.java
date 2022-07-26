@@ -34,6 +34,9 @@ public class ControllerResidentController {
 
     @PostMapping
     public ResponseEntity<Object> saveCondominiumResident(@RequestBody @Valid CondominiumResidentDto condominiumResidentDto){
+        if(condominiumResidentExists(condominiumResidentDto)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Condominium Resident already exists!");
+        }
         var condominiumResidentModel = new CondominiumResidentModel();
         BeanUtils.copyProperties(condominiumResidentDto, condominiumResidentModel);
         condominiumResidentModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -68,6 +71,7 @@ public class ControllerResidentController {
     public ResponseEntity<Object> updateCondominiumResident(@PathVariable(value = "id") UUID id,
                                                     @RequestBody @Valid CondominiumResidentDto condominiumResidentDto){
         Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(id);
+
         if (!condominiumResidentModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
         }
@@ -76,6 +80,10 @@ public class ControllerResidentController {
         condominiumResidentModel.setId(condominiumResidentModelOptional.get().getId());
         condominiumResidentModel.setRegistrationDate(condominiumResidentModelOptional.get().getRegistrationDate());
         return ResponseEntity.status(HttpStatus.OK).body(condominiumResidentService.save(condominiumResidentModel));
+    }
+
+    private boolean condominiumResidentExists(CondominiumResidentDto condominiumResidentDto) {
+        return condominiumResidentService.existsByCpf(condominiumResidentDto.getCpf());
     }
 
 }
