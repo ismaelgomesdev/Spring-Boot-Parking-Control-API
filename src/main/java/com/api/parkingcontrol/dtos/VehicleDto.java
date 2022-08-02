@@ -29,6 +29,9 @@ public class VehicleDto {
     @NotNull
     private UUID condominiumResidentId;
 
+    @NotBlank
+    private UUID apartmentId;
+
     public String getLicensePlate() {
         return licensePlate;
     }
@@ -83,5 +86,13 @@ public class VehicleDto {
 
     public void setCondominiumResidentId(UUID condominiumResidentId) {
         this.condominiumResidentId = condominiumResidentId;
+    }
+
+    public UUID getApartmentId() {
+        return apartmentId;
+    }
+
+    public void setApartmentId(UUID apartmentId) {
+        this.apartmentId = apartmentId;
     }
 }

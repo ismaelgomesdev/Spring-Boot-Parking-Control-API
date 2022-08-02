@@ -38,6 +38,10 @@ public class VehicleModel {
     @JoinColumn(name = "fk_id_condominium_resident")
     private CondominiumResidentModel condominiumResident;
 
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "fk_id_apartment")
+    private ApartmentModel apartment;
+
     public UUID getId() {
         return id;
     }
@@ -108,5 +112,13 @@ public class VehicleModel {
 
     public void setCondominiumResident(CondominiumResidentModel condominiumResident) {
         this.condominiumResident = condominiumResident;
+    }
+
+    public ApartmentModel getApartment() {
+        return apartment;
+    }
+
+    public void setApartment(ApartmentModel apartment) {
+        this.apartment = apartment;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -32,9 +33,12 @@ public class VehicleController {
 
     final CondominiumResidentService condominiumResidentService;
 
-    public VehicleController(VehicleService vehicleService, CondominiumResidentService condominiumResidentService) {
+    final ApartmentService apartmentService;
+
+    public VehicleController(VehicleService vehicleService, CondominiumResidentService condominiumResidentService, ApartmentService apartmentService) {
         this.vehicleService = vehicleService;
         this.condominiumResidentService = condominiumResidentService;
+        this.apartmentService = apartmentService;
     }
 
     @PostMapping
@@ -46,11 +50,22 @@ public class VehicleController {
         if(!this.condominiumResidentExists(vehicleDto))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
 
+        if(!this.apartmentExists(vehicleDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
+
+        Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(vehicleDto.getApartmentId());
+
+        if(apartmentModelOptional.get().getParkingSpotQuantity() < 1)
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("Not enough parking spaces");
+
         var vehicleModel = new VehicleModel();
         BeanUtils.copyProperties(vehicleDto, vehicleModel);
         vehicleModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         vehicleModel.setCondominiumResident(condominiumResidentService.findById(vehicleDto.getCondominiumResidentId()).get());
+        vehicleModel.setApartment(apartmentModelOptional.get());
+
+        apartmentModelOptional.get().setParkingSpotQuantity(apartmentModelOptional.get().getParkingSpotQuantity() - 1);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(vehicleService.save(vehicleModel));
     }
@@ -109,4 +124,9 @@ public class VehicleController {
     private boolean vehicleExists(VehicleDto vehicleDto) {
         return vehicleService.existsByLicensePlate(vehicleDto.getLicensePlate());
     }
+
+    private boolean apartmentExists(VehicleDto vehicleDto) {
+        return apartmentService.findById(vehicleDto.getApartmentId()).isPresent();
+    }
+
 }
