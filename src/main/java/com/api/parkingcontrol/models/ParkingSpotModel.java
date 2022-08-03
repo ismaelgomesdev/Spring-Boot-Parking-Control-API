@@ -17,7 +17,7 @@ public class ParkingSpotModel implements Serializable {
     @Column(nullable = false, unique = true, length = 10)
     private String parkingSpotNumber;
 
-    @Column(nullable = false, unique = false, length = 7)
+    @Column(nullable = false, unique = true, length = 7)
     private String licensePlateCar;
 
     @Column(nullable = false, length = 70)
