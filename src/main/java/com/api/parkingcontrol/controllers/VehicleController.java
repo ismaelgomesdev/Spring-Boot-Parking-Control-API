@@ -47,9 +47,6 @@ public class VehicleController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Vehicle already exists!");
         }
 
-        if(!this.condominiumResidentExists(vehicleDto))
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
-
         if(!this.apartmentExists(vehicleDto))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
 
@@ -62,9 +59,9 @@ public class VehicleController {
         BeanUtils.copyProperties(vehicleDto, vehicleModel);
         vehicleModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        vehicleModel.setCondominiumResident(condominiumResidentService.findById(vehicleDto.getCondominiumResidentId()).get());
+        vehicleModel.setCondominiumResident(apartmentModelOptional.get().getCondominiumResident());
         vehicleModel.setApartment(apartmentModelOptional.get());
-
+        vehicleModel.setSpotAdress(apartmentModelOptional.get().getApartmentNumber() + "-" + apartmentModelOptional.get().getParkingSpotQuantity());
         apartmentModelOptional.get().setParkingSpotQuantity(apartmentModelOptional.get().getParkingSpotQuantity() - 1);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(vehicleService.save(vehicleModel));
@@ -90,7 +87,11 @@ public class VehicleController {
         if (!vehicleModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
+
+        vehicleModelOptional.get().getApartment().setParkingSpotQuantity(vehicleModelOptional.get().getApartment().getParkingSpotQuantity()+1);
+
         vehicleService.delete(vehicleModelOptional.get());
+
         return ResponseEntity.status(HttpStatus.OK).body("Vehicle deleted successfully.");
     }
 
@@ -104,22 +105,25 @@ public class VehicleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle not found.");
         }
 
-        if(!this.condominiumResidentExists(vehicleDto))
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Condominium Resident not found.");
+        if(!this.apartmentExists(vehicleDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
+
+        if(!this.apartmentExists(vehicleDto))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Apartment not found.");
 
         var vehicleModel = new VehicleModel();
+
+        Optional<ApartmentModel> apartmentModelOptional = apartmentService.findById(vehicleDto.getApartmentId());
 
         BeanUtils.copyProperties(vehicleDto, vehicleModel);
         vehicleModel.setId(vehicleModelOptional.get().getId());
         vehicleModel.setRegistrationDate(vehicleModelOptional.get().getRegistrationDate());
-        vehicleModel.setCondominiumResident(condominiumResidentService.findById(vehicleDto.getCondominiumResidentId()).get());
+        vehicleModel.setCondominiumResident(apartmentModelOptional.get().getCondominiumResident());
+        vehicleModel.setApartment(apartmentModelOptional.get());
+
         return ResponseEntity.status(HttpStatus.OK).body(vehicleService.save(vehicleModel));
     }
 
-    private boolean condominiumResidentExists(VehicleDto vehicleDto) {
-        Optional<CondominiumResidentModel> condominiumResidentModelOptional = condominiumResidentService.findById(vehicleDto.getCondominiumResidentId());
-        return condominiumResidentModelOptional.isPresent();
-    }
 
     private boolean vehicleExists(VehicleDto vehicleDto) {
         return vehicleService.existsByLicensePlate(vehicleDto.getLicensePlate());

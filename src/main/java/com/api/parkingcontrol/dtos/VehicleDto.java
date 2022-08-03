@@ -23,13 +23,7 @@ public class VehicleDto {
     @NotBlank
     private String year;
 
-    @NotBlank
-    private String spotAdress;
-
     @NotNull
-    private UUID condominiumResidentId;
-
-    @NotBlank
     private UUID apartmentId;
 
     public String getLicensePlate() {
@@ -72,21 +66,6 @@ public class VehicleDto {
         this.year = year;
     }
 
-    public String getSpotAdress() {
-        return spotAdress;
-    }
-
-    public void setSpotAdress(String spotAdress) {
-        this.spotAdress = spotAdress;
-    }
-
-    public UUID getCondominiumResidentId() {
-        return condominiumResidentId;
-    }
-
-    public void setCondominiumResidentId(UUID condominiumResidentId) {
-        this.condominiumResidentId = condominiumResidentId;
-    }
 
     public UUID getApartmentId() {
         return apartmentId;
